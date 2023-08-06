@@ -1,10 +1,10 @@
-import unittest
+import pytest
 import numpy as np
 
 import ros2_numpy as rnp
 from sensor_msgs.msg import PointCloud2, PointField, Image
 
-class TestPointClouds(unittest.TestCase):
+class TestPointClouds:
     def makeArray(self, npoints):
         points_arr = np.zeros((npoints,), dtype=[
             ('x', np.float32),
@@ -34,12 +34,10 @@ class TestPointClouds(unittest.TestCase):
             ('y', np.float32)
         ])
         conv_fields = rnp.msgify(PointField, dtype, plural=True)
-        self.assertSequenceEqual(fields, conv_fields,
-                                 'dtype->Pointfield Failed with simple values')
+        assert fields == conv_fields, 'dtype->Pointfield Failed with simple values'
 
         conv_dtype = rnp.numpify(fields, point_step=8)
-        self.assertSequenceEqual(dtype, conv_dtype,
-                                 'dtype->Pointfield Failed with simple values')
+        assert dtype == conv_dtype, 'dtype->Pointfield Failed with simple values'
 
     def test_convert_dtype_inner(self):
         fields = [
@@ -58,13 +56,10 @@ class TestPointClouds(unittest.TestCase):
         ])
 
         conv_fields = rnp.msgify(PointField, dtype, plural=True)
-        self.assertSequenceEqual(fields, conv_fields,
-                                 'dtype->Pointfield with inner dimensions')
+        assert fields == conv_fields, 'dtype->Pointfield with inner dimensions'
 
         conv_dtype = rnp.numpify(fields, point_step=8)
-        self.assertEqual(dtype, conv_dtype,
-                         'Pointfield->dtype with inner dimensions')
-
+        assert dtype == conv_dtype, 'Pointfield->dtype with inner dimensions'
 
     def test_roundtrip(self):
 
@@ -88,6 +83,3 @@ class TestPointClouds(unittest.TestCase):
         new_points_arr = rnp.numpify(cloud_msg)
 
         np.testing.assert_equal(points_arr, new_points_arr)
-
-if __name__ == '__main__':
-    unittest.main()

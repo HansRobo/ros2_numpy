@@ -1,11 +1,11 @@
-import unittest
+import pytest
 import numpy as np
 import ros2_numpy as rnp
 import tf_transformations as transformations
 
 from geometry_msgs.msg import Vector3, Quaternion, Transform, Point, Pose
 
-class TestGeometry(unittest.TestCase):
+class TestGeometry:
     def test_point(self):
         p = Point(x=1., y=2., z=3.)
 
@@ -15,9 +15,9 @@ class TestGeometry(unittest.TestCase):
         p_arrh = rnp.numpify(p, hom=True)
         np.testing.assert_array_equal(p_arrh, [1, 2, 3, 1])
 
-        self.assertEqual(p, rnp.msgify(Point, p_arr))
-        self.assertEqual(p, rnp.msgify(Point, p_arrh))
-        self.assertEqual(p, rnp.msgify(Point, p_arrh * 2))
+        assert p == rnp.msgify(Point, p_arr)
+        assert p == rnp.msgify(Point, p_arrh)
+        assert p == rnp.msgify(Point, p_arrh * 2)
 
     def test_vector3(self):
         v = Vector3(x=1., y=2., z=3.)
@@ -28,10 +28,10 @@ class TestGeometry(unittest.TestCase):
         v_arrh = rnp.numpify(v, hom=True)
         np.testing.assert_array_equal(v_arrh, [1, 2, 3, 0])
 
-        self.assertEqual(v, rnp.msgify(Vector3, v_arr))
-        self.assertEqual(v, rnp.msgify(Vector3, v_arrh))
+        assert v == rnp.msgify(Vector3, v_arr)
+        assert v == rnp.msgify(Vector3, v_arrh)
 
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             rnp.msgify(Vector3, np.array([0, 0, 0, 1]))
 
     def test_transform(self):
@@ -81,6 +81,3 @@ class TestGeometry(unittest.TestCase):
         np.testing.assert_allclose(msg.orientation.y, t.orientation.y)
         np.testing.assert_allclose(msg.orientation.z, t.orientation.z)
         np.testing.assert_allclose(msg.orientation.w, t.orientation.w)
-
-if __name__ == '__main__':
-    unittest.main()
